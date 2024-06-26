@@ -1,0 +1,38 @@
+buildscript {
+    ext.kotlin_version = '1.9.23' // Keep your Kotlin version updated
+    repositories {
+        google()
+        mavenCentral() // Note: jcenter() is deprecated and should be replaced with mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:7.0.4' // Updated to a compatible version
+        classpath 'com.google.gms:google-services:4.3.5' // Ensure this is up-to-date
+    }
+}
+
+// ... rest of your build.gradle content ...
+
+// Remove the dependencies block from here
+
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
+
