@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:service_providers_glow/Info/app_info.dart';
-import 'package:service_providers_glow/UserScreens/signup.dart';
-import 'package:service_providers_glow/UserScreens/splashscreen.dart';
-import 'package:service_providers_glow/UserScreens/userhome.dart';
-import 'package:service_providers_glow/UserScreens/userlogin.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/signup.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/splashscreen.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/userhome.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/userlogin.dart';
 import 'package:service_providers_glow/tapPages/home_tab.dart';
 
 Future<void> main() async {

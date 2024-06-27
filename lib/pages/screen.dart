@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:service_providers_glow/UserScreens/signup.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/signup.dart';
 
 class Screen extends StatefulWidget {
   const Screen({super.key});

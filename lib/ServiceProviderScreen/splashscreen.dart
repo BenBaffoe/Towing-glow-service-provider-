@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:service_providers_glow/Assistants/assitant_method.dart';
-import 'package:service_providers_glow/UserScreens/signup.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/signup.dart';
 import 'package:service_providers_glow/global/global.dart';
 // import 'package:service_providers_glow/tapPages/home_tab.dart';
 

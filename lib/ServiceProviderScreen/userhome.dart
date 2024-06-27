@@ -99,7 +99,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         ],
         unselectedItemColor: darkTheme ? Colors.black54 : Colors.white54,
         selectedItemColor: darkTheme ? Colors.black : Colors.white,
-        backgroundColor: darkTheme ? Colors.amber.shade400 : Colors.blue,
+        backgroundColor: darkTheme ? Colors.amber.shade400 : Colors.black,
         type: BottomNavigationBarType.fixed,
         selectedLabelStyle: const TextStyle(fontSize: 14),
         showSelectedLabels: true,

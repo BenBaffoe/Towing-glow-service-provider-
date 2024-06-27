@@ -1,20 +1,20 @@
 import 'package:service_providers_glow/models/activeServiceProviders.dart';
 
 class GeofireAssistant {
-  static List<ActiveServiceProviders> activeDriversList = [];
+  static List<ActiveServiceProviders> activeServiceProviderList = [];
 
-  static get activeServiceProviderList => null;
+  // static get activeServiceProviderList => null;
 
   static void deletedOfflineDriverFromList(String serviceId) {
-    int indexNumber = activeDriversList
+    int indexNumber = activeServiceProviderList
         .indexWhere((element) => element.serviceId == serviceId);
 
-    activeDriversList.remove(indexNumber);
+    activeServiceProviderList.remove(indexNumber);
   }
 
   static void updateActiveDriverLocation(
       ActiveServiceProviders serviceProviderOnMove) {
-    int indexNumber = activeDriversList.indexWhere(
+    int indexNumber = activeServiceProviderList.indexWhere(
         (element) => element.serviceId == serviceProviderOnMove.serviceId);
 
     activeServiceProviderList[indexNumber].locationLatitude =

@@ -2,7 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:service_providers_glow/UserScreens/userlogin.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/editprofile.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/userlogin.dart';
 import 'package:service_providers_glow/global/global.dart';
 
 class DrawerScreen extends StatefulWidget {
@@ -141,11 +142,20 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           ),
                         ),
                       ),
-                      const Padding(
+                      Padding(
                           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                          child: Text(
-                            "Edit Profile",
-                            style: TextStyle(fontSize: 15),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EditProfile()));
+                            },
+                            child: Text(
+                              "Edit Profile",
+                              style: TextStyle(fontSize: 15),
+                            ),
                           )),
                     ],
                   ),

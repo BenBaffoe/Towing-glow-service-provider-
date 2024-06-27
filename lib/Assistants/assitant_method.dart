@@ -22,7 +22,7 @@ class AssistantMethods {
     currentUser = FirebaseAuth.instance.currentUser;
     DatabaseReference userRef = FirebaseDatabase.instance
         .ref()
-        .child("userInfo")
+        .child("Service Providers")
         .child(currentUser!.uid);
 
     userRef.once().then((snap) {

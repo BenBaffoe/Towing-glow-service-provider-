@@ -35,7 +35,7 @@ class PushNotificationSystem {
   readUserServiceRequestInfo(String serviceID, BuildContext context) {
     FirebaseDatabase.instance
         .ref()
-        .child(" All Service Request ")
+        .child(" All Ride Request ")
         .child(serviceID)
         .child("serviceID")
         .onValue
@@ -44,7 +44,7 @@ class PushNotificationSystem {
           event.snapshot.value == firebaseAuth.currentUser!.uid) {
         FirebaseDatabase.instance
             .ref()
-            .child("All Service Request")
+            .child("All Ride Request")
             .child(serviceID)
             .once()
             .then((snapData) {

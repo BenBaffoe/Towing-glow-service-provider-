@@ -4,9 +4,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:service_providers_glow/UserScreens/signup.dart';
-import 'package:service_providers_glow/UserScreens/splashscreen.dart';
-import 'package:service_providers_glow/UserScreens/userhome.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/signup.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/splashscreen.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/userhome.dart';
 import 'package:service_providers_glow/global/global.dart';
 import 'package:service_providers_glow/tapPages/home_tab.dart';
 
