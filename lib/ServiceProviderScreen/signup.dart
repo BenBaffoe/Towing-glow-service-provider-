@@ -1,9 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:service_providers_glow/Common/toast.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/userhome.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/userlogin.dart';
 import 'package:service_providers_glow/global/global.dart';
@@ -376,35 +378,45 @@ class _SignUpState extends State<SignUp> {
 //   }
 // }
 
-  void _submit() async {
-    if (formKey.currentState!.validate()) {
-      await firebaseAuth
-          .createUserWithEmailAndPassword(
-              email: emailController.text, password: passwordController.text)
-          .then((auth) async {
-        currentUser = auth.user;
-
-        if (currentUser != null) {
-          Map userMap = {
-            "id": currentUser!.uid,
-            "name": nameController.text.trim(),
-            "email": emailController.text.trim(),
-            "phone": phoneController.text.trim(),
-          };
-          DatabaseReference userRef =
-              FirebaseDatabase.instance.ref().child("Service Providers");
-          userRef.child(currentUser!.uid).set(userMap);
-        }
-        await Fluttertoast.showToast(msg: "User created");
-
-        Navigator.push(
-            context, MaterialPageRoute(builder: (c) => const Home()));
-      }).catchError((err) {
-        Fluttertoast.showToast(msg: "Error: " + err.message);
+  Future<void> _submit() async {
+    try {
+      setState(() {
+        isLoading = true;
       });
-    } else {
-      Fluttertoast.showToast(
-          msg: "Some inputs in the text field are not valid");
+      if (formKey.currentState!.validate()) {
+        await firebaseAuth
+            .createUserWithEmailAndPassword(
+                email: emailController.text, password: passwordController.text)
+            .then((auth) async {
+          currentUser = auth.user;
+
+          if (currentUser != null) {
+            Map userMap = {
+              "id": currentUser!.uid,
+              "name": nameController.text.trim(),
+              "email": emailController.text.trim(),
+              "phone": phoneController.text.trim(),
+            };
+            DatabaseReference userRef =
+                FirebaseDatabase.instance.ref().child("Service Providers");
+            userRef.child(currentUser!.uid).set(userMap);
+          }
+          await Fluttertoast.showToast(msg: "User created");
+
+          Navigator.push(
+              context, MaterialPageRoute(builder: (c) => const Home()));
+        }).catchError((err) {
+          Fluttertoast.showToast(msg: "Error: " + err.message);
+        });
+      } else {
+        Fluttertoast.showToast(
+            msg: "Some inputs in the text field are not valid");
+      }
+    } catch (e) {
+      showToast(message: "User already exists");
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 }

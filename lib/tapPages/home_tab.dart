@@ -95,6 +95,7 @@ class _HomeTabState extends State<HomeTab> {
 
     checkLocationPermission();
     readCurrentDriverPermission();
+
     PushNotificationSystem pushNotificationSystem = PushNotificationSystem();
     pushNotificationSystem.initializeCloudMessaging(context);
     pushNotificationSystem.generateAndGetToken();

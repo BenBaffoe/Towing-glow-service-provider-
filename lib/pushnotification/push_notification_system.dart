@@ -35,8 +35,7 @@ class PushNotificationSystem {
   readUserServiceRequestInfo(String serviceID, BuildContext context) {
     FirebaseDatabase.instance
         .ref()
-        .child(" All Ride Request ")
-        .child(serviceID)
+        .child("Service Requests")
         .child("serviceID")
         .onValue
         .listen((event) {
@@ -44,7 +43,7 @@ class PushNotificationSystem {
           event.snapshot.value == firebaseAuth.currentUser!.uid) {
         FirebaseDatabase.instance
             .ref()
-            .child("All Ride Request")
+            .child("Service Requests")
             .child(serviceID)
             .once()
             .then((snapData) {
@@ -66,10 +65,10 @@ class PushNotificationSystem {
             String destinationAddress =
                 (snapData.snapshot.value! as Map)["destinationAddress"];
 
-            String userName = (snapData.snapshot.value! as Map)["name"];
-            String userPhone = (snapData.snapshot.value! as Map)["phone"];
+            String userName = (snapData.snapshot.value! as Map)["userName"];
+            String userPhone = (snapData.snapshot.value! as Map)["userPhone"];
 
-            String? serviceRequestID = snapData.snapshot.key;
+            String? serviceID = snapData.snapshot.key;
 
             UserServiceRequestInfo userServiceRequestInfo =
                 UserServiceRequestInfo();
@@ -82,7 +81,7 @@ class PushNotificationSystem {
             userServiceRequestInfo.userName = userName;
             userServiceRequestInfo.userPhone = userPhone;
 
-            userServiceRequestInfo.serviceRequestID = serviceRequestID;
+            userServiceRequestInfo.serviceID = serviceID;
 
             showDialog(
                 context: context,

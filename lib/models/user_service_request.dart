@@ -5,7 +5,7 @@ class UserServiceRequestInfo {
   LatLng? destinationLatLng;
   String? originAddress;
   String? destinationAddress;
-  String? serviceRequestID;
+  String? serviceID;
   String? userName;
   String? userPhone;
 
@@ -13,7 +13,7 @@ class UserServiceRequestInfo {
     this.originLatLng,
     this.destinationLatLng,
     this.destinationAddress,
-    this.serviceRequestID,
+    this.serviceID,
     this.userName,
     this.userPhone,
     this.originAddress,

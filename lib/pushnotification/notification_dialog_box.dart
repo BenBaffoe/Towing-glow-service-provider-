@@ -34,7 +34,8 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
         ),
         child: Column(
           children: [
-            Image.asset('assets/towing-concept-illustration_114360-5474.jpg' , height:100 , width:100),
+            Image.asset('assets/towing-concept-illustration_114360-5474.jpg',
+                height: 100, width: 100),
             const SizedBox(
               height: 10,
             ),
@@ -83,14 +84,17 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
                   const SizedBox(
                     height: 20,
                   ),
-                  // Row(
-                  //   children: [Image.asset("")],
-                  // )
-                  // Expanded(
-                  //   child:Text(
-                  // widget.userServiceRequestInfo!.
-                  //   ),
-                  //   )
+                  Row(
+                    children: [Image.asset("")],
+                  ),
+                  Expanded(
+                    child: Text(
+                      widget.userServiceRequestInfo!.originAddress!,
+                      style: TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
