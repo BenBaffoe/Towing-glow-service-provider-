@@ -1,6 +1,6 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class UserServiceRequestInfo {
+class Pushnotification {
   LatLng? originLatLng;
   LatLng? destinationLatLng;
   String? originAddress;
@@ -10,7 +10,7 @@ class UserServiceRequestInfo {
   String? userName;
   String? userPhone;
 
-  UserServiceRequestInfo({
+  Pushnotification({
     this.originLatLng,
     this.destinationLatLng,
     this.destinationAddress,

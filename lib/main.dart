@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:service_providers_glow/Info/app_info.dart';
@@ -8,21 +10,31 @@ import 'package:service_providers_glow/ServiceProviderScreen/signup.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/splashscreen.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/userhome.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/userlogin.dart';
+import 'package:service_providers_glow/local_notifications.dart';
 import 'package:service_providers_glow/tapPages/home_tab.dart';
 
 Future<void> main() async {
-  // await FirebaseMessaging.instance.setAutoInitEnabled(true);
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (Platform.isAndroid) {
-    Firebase.initializeApp(
-      options: const FirebaseOptions(
-          apiKey: "AIzaSyBt9LHHiLzPA-F1iUjaUlGWPEWpCe9mSq0",
-          appId: "1:846686411265:android:8e9c362d72e42bc3aa7e00",
-          messagingSenderId: "846686411265",
-          projectId: "roadtoll-1"),
-    );
-  }
+  // Initialize Firebase and await its completion
+  await Firebase.initializeApp();
+
+  await LocalNotifications.init();
+
+  // Enable auto-initialization for Firebase Messaging
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+
+  // WidgetsFlutterBinding.ensureInitialized();
+
+  // if (Platform.isAndroid) {
+  //   Firebase.initializeApp(
+  //     options: const FirebaseOptions(
+  //         apiKey: "AIzaSyBt9LHHiLzPA-F1iUjaUlGWPEWpCe9mSq0",
+  //         appId: "1:846686411265:android:8e9c362d72e42bc3aa7e00",
+  //         messagingSenderId: "846686411265",
+  //         projectId: "roadtoll-1"),
+  //   );
+  // }
 
   runApp(const MyApp());
 }

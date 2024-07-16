@@ -25,6 +25,8 @@ double countRatings = 0.0;
 
 String userDropOffAddress = "";
 
+String serviceType = '';
+
 Position? serviceCurrentPosition;
 
 final FirebaseAuth auth = FirebaseAuth.instance;

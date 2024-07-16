@@ -38,6 +38,14 @@ class _SignUpState extends State<SignUp> {
     return null;
   }
 
+  List services = [
+    "Vulcanizer",
+    "Fuel/Battery Emergency",
+    "Towing Emergency",
+  ];
+
+  String initialValue = "Select a serivce";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,6 +167,33 @@ class _SignUpState extends State<SignUp> {
                                   color: Colors.black),
                             ),
                           ),
+                        ),
+                        DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            hintText: "Please select a serive",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: const BorderSide(
+                                  width: 0,
+                                  style: BorderStyle.none,
+                                )),
+                          ),
+                          items: services.map((e) {
+                            return DropdownMenuItem(
+                              child: Text(
+                                e,
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              value: e,
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              serviceType = newValue as String;
+                            });
+                          },
                         ),
                         const SizedBox(
                           height: 20,
@@ -396,9 +431,10 @@ class _SignUpState extends State<SignUp> {
               "name": nameController.text.trim(),
               "email": emailController.text.trim(),
               "phone": phoneController.text.trim(),
+              "service": serviceType,
             };
             DatabaseReference userRef =
-                FirebaseDatabase.instance.ref().child("Service Providers");
+                FirebaseDatabase.instance.ref().child("userInfo");
             userRef.child(currentUser!.uid).set(userMap);
           }
           await Fluttertoast.showToast(msg: "User created");
