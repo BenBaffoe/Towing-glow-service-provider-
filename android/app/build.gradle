@@ -35,9 +35,8 @@ android {
     namespace "com.example.service_providers_glow"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
-
-     defaultConfig {
-    multiDexEnabled true
+    defaultConfig {
+         multiDexEnabled true
   }
 
     compileOptions {

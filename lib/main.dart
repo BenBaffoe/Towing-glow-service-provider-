@@ -16,10 +16,10 @@ import 'package:service_providers_glow/tapPages/home_tab.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await LocalNotifications.init();
+
   // Initialize Firebase and await its completion
   await Firebase.initializeApp();
-
-  await LocalNotifications.init();
 
   // Enable auto-initialization for Firebase Messaging
   await FirebaseMessaging.instance.setAutoInitEnabled(true);

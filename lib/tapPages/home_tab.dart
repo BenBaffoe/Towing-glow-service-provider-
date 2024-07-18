@@ -14,6 +14,7 @@ import 'package:service_providers_glow/global/global.dart';
 import 'package:service_providers_glow/local_notifications.dart';
 import 'package:service_providers_glow/pushnotification/notification_dialog_box.dart';
 import 'package:service_providers_glow/pushnotification/push_notification_system.dart';
+import 'package:service_providers_glow/tapPages/servicerequests.dart';
 // import 'package:service_providers_glow/lib/models/pushdialog.dart';
 
 class HomeTab extends StatefulWidget {
@@ -81,6 +82,16 @@ class _HomeTabState extends State<HomeTab> {
   //   });
   // }
 
+  getNotification() {
+    print("Listening for notifications");
+    LocalNotifications.onClickedNotification.stream.listen((event) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ServiceRequests(payload: event)));
+    });
+  }
+
   Future<void> retrieveServiceRequest(String serviceType) async {
     DatabaseReference userRef =
         FirebaseDatabase.instance.ref().child("Service Requests");
@@ -113,10 +124,13 @@ class _HomeTabState extends State<HomeTab> {
                 serviceRequestInfo['originAddress'] ?? 'Unknown';
             String userPhone = serviceRequestInfo['userPhone'] ?? 'Unknown';
 
-            LocalNotifications.showNotificaion(
+            originAddress.substring(0, 20);
+
+            LocalNotifications.showSimpleNotification(
                 title: 'Service Request',
                 body: 'Service request from $userName',
-                payload: "$userName requesting $service");
+                payload:
+                    " \nName: $userName\nContact: 0$userPhone\nLocation: $originAddress\nService Request:  $service needed");
           }
         });
       }
@@ -199,7 +213,7 @@ class _HomeTabState extends State<HomeTab> {
     // Set up a timer that triggers every 'duration'
     Timer.periodic(duration, (Timer timer) {
       // Call your existing data retrieval function
-      retrieveServiceRequest(serviceType);
+      retrieveServiceRequest("Vulcanizer");
     });
   }
 
@@ -267,6 +281,8 @@ class _HomeTabState extends State<HomeTab> {
         await AssistantMethods.searchAddressForGeographicCoOrdinates(
             serviceCurrentPosition!, context);
     print("This is our address = $humanReadableAddress");
+
+    serviceProviderLocation = humanReadableAddress;
   }
 
   LocationPermission? _locationPermission;
@@ -276,7 +292,7 @@ class _HomeTabState extends State<HomeTab> {
 
     FirebaseDatabase.instance
         .ref()
-        .child("Service Providers")
+        .child("userInfo")
         .child(currentUser!.uid)
         .once()
         .then((snap) {
@@ -307,15 +323,14 @@ class _HomeTabState extends State<HomeTab> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    LocalNotifications.init();
     checkLocationPermission();
     readCurrentDriverPermission();
-
+    startPeriodicServiceRequestRetrieval();
     // PushNotificationSystem pushNotificationSystem = PushNotificationSystem();
     // pushNotificationSystem.initializeCloudMessaging(context);
     // pushNotificationSystem.generateAndGetToken();
-
-    startPeriodicServiceRequestRetrieval();
+    getNotification();
   }
 
   @override

@@ -298,7 +298,7 @@ class _UserLoginState extends State<UserLogin> {
               email: _emailController.text, password: _passwordController.text)
           .then((auth) async {
         DatabaseReference userRef =
-            FirebaseDatabase.instance.ref().child("Service Providers");
+            FirebaseDatabase.instance.ref().child("userInfo");
 
         userRef.child(firebaseAuth.currentUser!.uid).once().then((value) async {
           final snap = value.snapshot;

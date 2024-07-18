@@ -27,6 +27,8 @@ String userDropOffAddress = "";
 
 String serviceType = '';
 
+String serviceProviderLocation = "";
+
 Position? serviceCurrentPosition;
 
 final FirebaseAuth auth = FirebaseAuth.instance;
