@@ -10,7 +10,7 @@ import 'package:service_providers_glow/ServiceProviderScreen/userhome.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/userlogin.dart';
 import 'package:service_providers_glow/global/global.dart';
 
-import '../tapPages/home_tab.dart';
+// import '../tapPages/home_tab.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -49,7 +49,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 90, 228, 168),
+      backgroundColor: const Color.fromARGB(255, 90, 228, 168),
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
@@ -182,11 +182,11 @@ class _SignUpState extends State<SignUp> {
                           ),
                           items: services.map((e) {
                             return DropdownMenuItem(
+                              value: e,
                               child: Text(
                                 e,
-                                style: TextStyle(color: Colors.grey),
+                                style: const TextStyle(color: Colors.grey),
                               ),
-                              value: e,
                             );
                           }).toList(),
                           onChanged: (newValue) {

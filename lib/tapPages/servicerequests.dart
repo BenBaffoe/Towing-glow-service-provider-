@@ -1,14 +1,26 @@
-import 'dart:ui';
+// import 'dart:ui';
+
+import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+// import 'package:googleapis/datastore/v1.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/userLocation.dart';
 import 'package:service_providers_glow/global/global.dart';
+// import 'package:service_providers_glow/global/global.dart';
+import 'package:service_providers_glow/models/user_service_request.dart';
+// import 'package:service_providers_glow/tapPages/home_tab.dart';
 
 class ServiceRequests extends StatefulWidget {
+  // final Map<String, dynamic> payload;
   final String payload;
-  const ServiceRequests({super.key, required this.payload});
+  // final Map payload_map;
+  UserServiceRequestInfo? userServiceRequestInfo;
+
+  ServiceRequests(
+      {super.key, required this.payload, required this.userServiceRequestInfo});
 
   @override
   State<ServiceRequests> createState() => _ServiceRequestsState();
@@ -21,48 +33,6 @@ class _ServiceRequestsState extends State<ServiceRequests> {
   String name = "";
   String phone = "";
   String email = "";
-
-  // Future<void> serviceProviderInfo() async {
-  //   referenceRequest =
-  //       FirebaseDatabase.instance.ref().child("serviceProvider").push();
-
-  //   // DatabaseReference userRef =
-  //   //               FirebaseDatabase.instance.ref().child("userInfo");
-
-  //   User? user = FirebaseAuth.instance.currentUser;
-  //   DatabaseReference userRef = FirebaseDatabase.instance
-  //       .ref()
-  //       .child(firebaseAuth.currentUser!.uid)
-  //       .child('userInfo');
-  //   DataSnapshot snapshot = await userRef.get();
-
-  //   userRef.onValue.listen((event) {
-  //     if (event.snapshot.exists) {
-  //       Map<dynamic, dynamic> serviceProviderInfoMap =
-  //           Map<dynamic, dynamic>.from(event.snapshot.value as Map);
-
-  //       serviceProviderInfoMap.forEach((key, value) {
-  //         // Access the 'service' field
-  //         Map<dynamic, dynamic> serviceRequestInfo =
-  //             value as Map<dynamic, dynamic>;
-  //         service = serviceRequestInfo['service'];
-  //         name = serviceRequestInfo['name'];
-  //         phone = serviceRequestInfo['phone'];
-  //         email = serviceRequestInfo['email'];
-  //       });
-  //     }
-  //   });
-
-  //   Map serviceproviderInfo = {
-  //     "email": email,
-  //     "name": name,
-  //     "phone": phone,
-  //     "service": service,
-  //     "location": serviceProviderLocation,
-  //   };
-
-  //   referenceRequest!.set(serviceproviderInfo);
-  // }
 
   Future<void> serviceProviderInfo() async {
     try {
@@ -105,9 +75,10 @@ class _ServiceRequestsState extends State<ServiceRequests> {
           "name": name,
           "phone": phone,
           "service": service,
-          "location":
-              serviceProviderLocation, // Make sure this variable is defined
+          "location": driverPosition, // Make sure this variable is defined
         };
+
+        print("$driverPosition + Hellooooooooooooooooooooooooooooooooooooooo");
 
         // Push the data to the "serviceProvider" node
         await referenceRequest!.set(serviceInfo);
@@ -121,14 +92,22 @@ class _ServiceRequestsState extends State<ServiceRequests> {
     } catch (e) {
       print('Error retrieving user data: $e');
     }
+
+    print("$driverPosition + Hellooooooooooooooooooooooooooooooooooooooo");
   }
+
+  // void drawPolyline() async {
+  //   LatLng userLatLng = await locateServicePosition();
+  //   print(
+  //       'User\'s current position: ${userLatLng.latitude}, ${userLatLng.longitude}');
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 40,
           ),
           const Padding(
@@ -180,7 +159,8 @@ class _ServiceRequestsState extends State<ServiceRequests> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                       child: Text(
-                        widget.payload,
+                        widget.userServiceRequestInfo!.userName,
+                        // widget.payload,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -207,8 +187,18 @@ class _ServiceRequestsState extends State<ServiceRequests> {
                     ),
                     ElevatedButton(
                         onPressed: () {
-                          print(serviceProviderInfo());
+                          // print(serviceProviderInfo());
                           serviceProviderInfo();
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserLocation(
+                                    userCurrentLocation:
+                                        widget.userServiceRequestInfo)),
+                          );
+
+                          // drawPolyline();
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(

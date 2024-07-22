@@ -27,16 +27,18 @@ String userDropOffAddress = "";
 
 String serviceType = '';
 
-String serviceProviderLocation = "";
-
 Position? serviceCurrentPosition;
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
 String titleStarsRating = "";
 
+var serviceProviderLocation;
+
 String userName = "";
 
+// LatLng? driverPosition;
+LatLng? driverPosition;
 AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
 
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -61,6 +63,8 @@ Future<void> getData(String _nameController, String _emailController,
       .then((value) => print('New user added'))
       .catchError((error) => print('Failed to add user'));
 }
+
+String humanReadableAddress = '';
 
 String username = "";
 String googlesMapKey = "AIzaSyBqtAzED0r5rQvQjsncU10np2bIAUsg6ZY";

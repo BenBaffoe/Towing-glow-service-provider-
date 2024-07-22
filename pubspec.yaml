@@ -45,7 +45,7 @@ dependencies:
   firebase_storage: ^11.7.5
   fluttertoast: ^8.2.5
 
-  location: ^6.0.2
+  location: ^7.0.0
   firebase_database: ^10.5.6
  
 

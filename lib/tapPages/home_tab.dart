@@ -1,10 +1,11 @@
 import 'dart:async';
-
+// import 'dart:collection';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,8 +13,9 @@ import 'package:service_providers_glow/Assistants/assitant_method.dart';
 
 import 'package:service_providers_glow/global/global.dart';
 import 'package:service_providers_glow/local_notifications.dart';
-import 'package:service_providers_glow/pushnotification/notification_dialog_box.dart';
-import 'package:service_providers_glow/pushnotification/push_notification_system.dart';
+import 'package:service_providers_glow/models/user_service_request.dart';
+// import 'package:service_providers_glow/pushnotification/notification_dialog_box.dart';
+// import 'package:service_providers_glow/pushnotification/push_notification_system.dart';
 import 'package:service_providers_glow/tapPages/servicerequests.dart';
 // import 'package:service_providers_glow/lib/models/pushdialog.dart';
 
@@ -25,61 +27,31 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    LocalNotifications.init();
+    checkLocationPermission();
+    readCurrentDriverPermission();
+    startPeriodicServiceRequestRetrieval();
+    // PushNotificationSystem pushNotificationSystem = PushNotificationSystem();
+    // pushNotificationSystem.initializeCloudMessaging(context);
+    // pushNotificationSystem.generateAndGetToken();
+    getNotification();
+  }
+
   final Completer<GoogleMapController> googleMapCompleteContoller =
       Completer<GoogleMapController>();
 
+  Map getdata = {};
+
   GoogleMapController? controllerGoogleMap;
 
-  // Future<void> retrieveServiceRequest(String serviceType) async {
-  //   DatabaseReference userRef =
-  //       FirebaseDatabase.instance.ref().child("Service Requests");
+  UserServiceRequestInfo? userServiceRequestInfo;
 
-  //   userRef.onValue.listen((event) {
-  //     // Check if there's data
-  //     if (event.snapshot.exists) {
-  //       // Get the data as a Map
-  //       Map<String, dynamic> serviceRequestsMap =
-  //           Map<String, dynamic>.from(event.snapshot.value as Map);
-
-  //       // Access the 'service' field
-  //       String? service = serviceRequestsMap['service'] as String?;
-
-  //       print(
-  //           "$service + Aaaahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhaha");
-
-  //       if (service != null && serviceType == service) {
-  //         Map<String, dynamic> serviceRequestsInfo =
-  //             Map<String, dynamic>.from(event.snapshot.value as Map);
-
-  //         String origin = serviceRequestsInfo['origin'] ?? 'Unknown';
-  //         String time = serviceRequestsInfo['time'] ?? 'Unknown';
-  //         String userName = serviceRequestsInfo['userName'] ?? 'Unknown';
-  //         String originAddress =
-  //             serviceRequestsInfo['originAddress'] ?? 'Unknown';
-  //         String userPhone = serviceRequestsInfo['userPhone'] ?? 'Unknown';
-
-  //         Map<String, String> body = {
-  //           'UserLocation': originAddress,
-  //           'UserName': userName,
-  //           'userPhone': userPhone,
-  //           'service': service,
-  //         };
-
-  //         print(
-  //           "$userName , $userPhone   ,  The programming I've stoppedddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-  //         );
-
-  //         LocalNotifications.showNotificaion(
-  //             title: 'Service Request',
-  //             body: 'Service request from $userName',
-  //             payload: "$userName requesting $service");
-
-  //         // Uncomment if you want to show a dialog with service request details
-  //         // showDialogWithServiceRequest(
-  //         //     context, service, userName, userPhone, originAddress, time);
-  //       }
-  //     }
-  //   });
+  // void getMapValue(Map value) {
+  //   seS
   // }
 
   getNotification() {
@@ -88,9 +60,18 @@ class _HomeTabState extends State<HomeTab> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ServiceRequests(payload: event)));
+              builder: (context) => ServiceRequests(
+                    userServiceRequestInfo: userServiceRequestInfo,
+                    payload: event,
+                  )));
     });
   }
+
+  String address = '';
+  String name = '';
+  String phone = '';
+  String email = '';
+  String location = '';
 
   Future<void> retrieveServiceRequest(String serviceType) async {
     DatabaseReference userRef =
@@ -114,97 +95,44 @@ class _HomeTabState extends State<HomeTab> {
 
           if (service != null && serviceType == service) {
             // Retrieve the service request info
-            String origin =
-                serviceRequestInfo['origin']['latitude'].toString() +
-                    ', ' +
-                    serviceRequestInfo['origin']['longitude'].toString();
+            double originLatitude = double.parse(
+                serviceRequestInfo['origin']['latitude'].toString());
+            double originLongitude = double.parse(
+                serviceRequestInfo['origin']['longitude'].toString());
+            LatLng origin = LatLng(originLatitude, originLongitude);
             String time = serviceRequestInfo['time'] ?? 'Unknown';
             String userName = serviceRequestInfo['userName'] ?? 'Unknown';
             String originAddress =
                 serviceRequestInfo['originAddress'] ?? 'Unknown';
             String userPhone = serviceRequestInfo['userPhone'] ?? 'Unknown';
 
+            // Map _userInfo = {
+            //   "address": originAddress,
+            //   "name": userName,
+            //   "phone": userPhone,
+            //   "location": origin,
+            // };
+
+            userServiceRequestInfo = UserServiceRequestInfo(
+              service,
+              originLatLng: origin,
+              userName: userName,
+              userPhone: userPhone,
+              originAddress: originAddress,
+            );
+
             originAddress.substring(0, 20);
 
             LocalNotifications.showSimpleNotification(
-                title: 'Service Request',
-                body: 'Service request from $userName',
-                payload:
-                    " \nName: $userName\nContact: 0$userPhone\nLocation: $originAddress\nService Request:  $service needed");
+              title: 'Service Request',
+              body: 'Service request from $userName',
+              payload: '$userName',
+            );
           }
         });
       }
     });
   }
-
-//   Future<void> retrieveServiceRequest(String serviceType) async {
-//   DatabaseReference userRef =
-//       FirebaseDatabase.instance.ref().child("Service Requests");
-
-//   userRef.onValue.listen((event) {
-//     // Check if there's data
-//     if (event.snapshot.exists) {
-//       // Get the data as a Map
-//       Map<dynamic, dynamic> serviceRequestsMap =
-//           Map<dynamic, dynamic>.from(event.snapshot.value as Map);
-
-//       // Iterate over the service requests
-//       serviceRequestsMap.forEach((key, value) {
-//         // Access the 'service' field
-//         Map<dynamic, dynamic> serviceRequestInfo =
-//             value as Map<dynamic, dynamic>;
-//         String? service = serviceRequestInfo['service'] as String?;
-
-//         print("$service + servicessssssssssssssssssssssssssssssssssssss");
-
-//         if (service != null && serviceType == service) {
-//           // Retrieve the service request info
-//           String origin =
-//               serviceRequestInfo['origin']['latitude'].toString() +
-//                   ', ' +
-//                   serviceRequestInfo['origin']['longitude'].toString();
-//           String time = serviceRequestInfo['time'] ?? 'Unknown';
-//           String userName = serviceRequestInfo['userName'] ?? 'Unknown';
-//           String originAddress =
-//               serviceRequestInfo['originAddress'] ?? 'Unknown';
-//           String userPhone = serviceRequestInfo['userPhone'] ?? 'Unknown';
-
-//           LocalNotifications.showNotificaion(
-//               title: 'Service Request',
-//               body: 'Service request from $userName',
-//               payload: "$userName requesting $service");
-
-//           // Show the dialog box
-//           showDialog(
-//             context: context,
-//             builder: (context) => AlertDialog(
-//               title: Text('Service Request'),
-//               content: Text('Service request from $userName'),
-//               actions: [
-//                 ElevatedButton(
-//                   child: Text('Accept'),
-//                   onPressed: () {
-//                     // Handle accept button press
-//                     print('Accept button pressed');
-//                     // You can add your logic here to handle the accept button press
-//                   },
-//                 ),
-//                 ElevatedButton(
-//                   child: Text('Decline'),
-//                   onPressed: () {
-//                     // Handle decline button press
-//                     print('Decline button pressed');
-//                     // You can add your logic here to handle the decline button press
-//                   },
-//                 ),
-//               ],
-//             ),
-//           );
-//         }
-//       });
-//     }
-//   });
-// }
 
   void startPeriodicServiceRequestRetrieval() {
     // Define the timer duration
@@ -213,46 +141,9 @@ class _HomeTabState extends State<HomeTab> {
     // Set up a timer that triggers every 'duration'
     Timer.periodic(duration, (Timer timer) {
       // Call your existing data retrieval function
-      retrieveServiceRequest("Vulcanizer");
+      retrieveServiceRequest(serviceType);
     });
   }
-
-  // void showDialogWithServiceRequest(BuildContext context, String service,
-  //     String userName, String userPhone, String originAddress) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Text('New Service Request'),
-  //         content: SingleChildScrollView(
-  //           child: ListBody(
-  //             children: <Widget>[
-  //               Text('Service: $service'),
-  //               Text('Requested by: $userName'),
-  //               Text('Phone: $userPhone'),
-  //               Text('Origin Address: $originAddress'),
-  //             ],
-  //           ),
-  //         ),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             child: Text('Accept'),
-  //             onPressed: () {
-  //               // Handle accept action here
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //           TextButton(
-  //             child: Text('Decline'),
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 
   var geoLocation = Geolocator();
 
@@ -264,7 +155,9 @@ class _HomeTabState extends State<HomeTab> {
     }
   }
 
-  locateServicePosition() async {
+  Set<Marker> _markers = {};
+
+  Future<void> locateServicePosition() async {
     Position currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     serviceCurrentPosition = currentPosition;
@@ -282,8 +175,48 @@ class _HomeTabState extends State<HomeTab> {
             serviceCurrentPosition!, context);
     print("This is our address = $humanReadableAddress");
 
-    serviceProviderLocation = humanReadableAddress;
+    _updateDriverPosition(
+        latLngPosition); // Update the position and add the marker
   }
+
+  void _updateDriverPosition(LatLng position) {
+    setState(() {
+      driverPosition = position;
+      _markers.add(
+        Marker(
+          markerId: const MarkerId("currentLocation"),
+          position: driverPosition!,
+          icon: BitmapDescriptor.defaultMarker,
+        ),
+      );
+    });
+  }
+
+  // locateServicePosition() async {
+  //   Position currentPosition = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high);
+  //   serviceCurrentPosition = currentPosition;
+
+  //   LatLng latLngPosition = LatLng(
+  //       serviceCurrentPosition!.latitude, serviceCurrentPosition!.longitude);
+  //   CameraPosition cameraPosition =
+  //       CameraPosition(target: latLngPosition, zoom: 15);
+
+  //   controllerGoogleMap!
+  //       .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+  //   String humanReadableAddress =
+  //       await AssistantMethods.searchAddressForGeographicCoOrdinates(
+  //           serviceCurrentPosition!, context);
+  //   print("This is our address = $humanReadableAddress");
+  // }
+
+  // drawPolyline() async {
+  //   LatLng userLatLng = await locateServicePosition();
+  //   print(
+  //       'User\'s current position: ${userLatLng.latitude}, ${userLatLng.longitude}');
+  //   return userLatLng;
+  // }
 
   LocationPermission? _locationPermission;
 
@@ -320,28 +253,15 @@ class _HomeTabState extends State<HomeTab> {
   bool isDriverActive = false;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    LocalNotifications.init();
-    checkLocationPermission();
-    readCurrentDriverPermission();
-    startPeriodicServiceRequestRetrieval();
-    // PushNotificationSystem pushNotificationSystem = PushNotificationSystem();
-    // pushNotificationSystem.initializeCloudMessaging(context);
-    // pushNotificationSystem.generateAndGetToken();
-    getNotification();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           GoogleMap(
-            padding: EdgeInsets.only(top: 40),
+            padding: const EdgeInsets.only(top: 40),
             mapType: MapType.normal,
             myLocationEnabled: true,
+            markers: _markers,
             initialCameraPosition: googlePlexIntitialPosition,
             onMapCreated: (GoogleMapController mapContoller) {
               controllerGoogleMap = mapContoller;
@@ -350,18 +270,6 @@ class _HomeTabState extends State<HomeTab> {
               locateServicePosition();
               // getCurrentLiveLocationOfUser();
             },
-          ),
-          Positioned(
-            top: 80,
-            left: 40,
-            child: ElevatedButton(
-              onPressed: () {
-                retrieveServiceRequest("Towing Emergency");
-              },
-              style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(120, 20), elevation: 1),
-              child: const Text("Press"),
-            ),
           ),
           statusText != "Online"
               ? Container(
@@ -414,7 +322,7 @@ class _HomeTabState extends State<HomeTab> {
                           side: const BorderSide(style: BorderStyle.solid))),
                   child: Text(
                     isDriverActive ? "Online" : "Now Offline",
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
                   ),
                 ),
               ],
@@ -508,7 +416,7 @@ class _HomeTabState extends State<HomeTab> {
     ref.remove();
     ref = null;
 
-    Future.delayed(Duration(milliseconds: 2000), () {
+    Future.delayed(const Duration(milliseconds: 2000), () {
       SystemChannels.platform.invokeMethod("SystemNavigator.pop");
     });
   }

@@ -25,11 +25,11 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 220,
       child: Drawer(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(30, 50, 0, 20),
+          padding: const EdgeInsets.fromLTRB(30, 50, 0, 20),
           child: Column(
             children: [
               Stack(
@@ -143,7 +143,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         ),
                       ),
                       Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                           child: GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -152,7 +152,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                       builder: (context) =>
                                           const EditProfile()));
                             },
-                            child: Text(
+                            child: const Text(
                               "Edit Profile",
                               style: TextStyle(fontSize: 15),
                             ),

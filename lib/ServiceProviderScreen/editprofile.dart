@@ -30,7 +30,7 @@ class _EditProfileState extends State<EditProfile> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Update"),
+            title: const Text("Update"),
             content: SingleChildScrollView(
               child: Column(
                 children: [
@@ -188,7 +188,7 @@ class _EditProfileState extends State<EditProfile> {
             size: 35,
           ),
         ),
-        title: Text("Edit Profile"),
+        title: const Text("Edit Profile"),
         centerTitle: true,
       ),
       body: Column(
@@ -245,7 +245,7 @@ class _EditProfileState extends State<EditProfile> {
               children: [
                 Text(
                   "${userModelCurrentInfo!.name!}",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -255,7 +255,7 @@ class _EditProfileState extends State<EditProfile> {
                       showUserNameDialogAlert(
                           context, userModelCurrentInfo!.name!);
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.edit,
                     ))
               ],
@@ -271,7 +271,7 @@ class _EditProfileState extends State<EditProfile> {
               children: [
                 Text(
                   "${userModelCurrentInfo!.email!}",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -281,7 +281,7 @@ class _EditProfileState extends State<EditProfile> {
                     showUserEmailDialogAlert(
                         context, userModelCurrentInfo!.email!);
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.edit,
                   ),
                 ),
@@ -298,7 +298,7 @@ class _EditProfileState extends State<EditProfile> {
               children: [
                 Text(
                   " 0${userModelCurrentInfo!.phone!}",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -308,7 +308,7 @@ class _EditProfileState extends State<EditProfile> {
                     showUserPhoneDialogAlert(
                         context, userModelCurrentInfo!.phone!);
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.edit,
                   ),
                 ),
