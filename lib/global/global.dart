@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:service_providers_glow/models/directions_details_info.dart';
 import 'package:service_providers_glow/models/serviceproviderdata.dart';
 import 'package:service_providers_glow/models/user_modals.dart';
+import 'package:service_providers_glow/models/user_service_request.dart';
 
 UserModel? userModelCurrentInfo;
 
@@ -37,6 +38,12 @@ var serviceProviderLocation;
 
 String userName = "";
 
+ServiceData? serviceData;
+
+const String StripePublicKey =
+    "pk_test_51PhSpLDBSBsOjpSFMy74OjlDjudb4edRfLI6yJzgyEiop8usiydm4jyLHxfSSFX7sY5kNRJhPlvYXRKSRVMt7Wnh00YeF54Vhf";
+const Stripesecretkey =
+    'sk_test_51PhSpLDBSBsOjpSFIFryaaGX7XmwVBb9RTnL0PQlaHV7OhpjY2qqIvR6iHHifChnFOlneguM8LR05OICqwEfJcBi00jPEZKpcT';
 // LatLng? driverPosition;
 LatLng? driverPosition;
 AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();

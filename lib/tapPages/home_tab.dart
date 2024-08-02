@@ -9,7 +9,10 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:service_providers_glow/Assistants/assitant_method.dart';
+import 'package:service_providers_glow/Info/app_info.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/Account.dart';
 
 import 'package:service_providers_glow/global/global.dart';
 import 'package:service_providers_glow/local_notifications.dart';
@@ -106,11 +109,20 @@ class _HomeTabState extends State<HomeTab> {
                 serviceRequestInfo['originAddress'] ?? 'Unknown';
             String userPhone = serviceRequestInfo['userPhone'] ?? 'Unknown';
 
+            var originLocation =
+                Provider.of<AppInfo>(context, listen: false).userPickUpLocation;
+
+            Map originLocations = {
+              "latitude": originLocation!.loactionLatitude,
+              "longitude": originLocation.loactionLongitude,
+            };
+
             // Map _userInfo = {
             //   "address": originAddress,
             //   "name": userName,
             //   "phone": userPhone,
             //   "location": origin,
+
             // };
 
             userServiceRequestInfo = UserServiceRequestInfo(
@@ -119,7 +131,15 @@ class _HomeTabState extends State<HomeTab> {
               userName: userName,
               userPhone: userPhone,
               originAddress: originAddress,
+              serviceProviderLocation: originLocations,
             );
+
+            // history = UserServiceRequestInfo(service,
+            //     originLatLng: origin,
+            //     userName: userName,
+            //     userPhone: userPhone,
+            //     originAddress: originAddress,
+            //     serviceProviderLocation: serviceProviderLocation);
 
             originAddress.substring(0, 20);
 
@@ -230,7 +250,7 @@ class _HomeTabState extends State<HomeTab> {
         .once()
         .then((snap) {
       if (snap.snapshot.value != null) {
-        onlineServicedata.id = (snap.snapshot.value as Map)["id"];
+        // onlineServicedata.id = (snap.snapshot.value as Map)["id"];
         onlineServicedata.name = (snap.snapshot.value as Map)["name"];
         onlineServicedata.phone = (snap.snapshot.value as Map)["phone"];
         onlineServicedata.email = (snap.snapshot.value as Map)["email"];
@@ -260,6 +280,7 @@ class _HomeTabState extends State<HomeTab> {
           GoogleMap(
             padding: const EdgeInsets.only(top: 40),
             mapType: MapType.normal,
+            myLocationButtonEnabled: true,
             myLocationEnabled: true,
             markers: _markers,
             initialCameraPosition: googlePlexIntitialPosition,
@@ -268,101 +289,68 @@ class _HomeTabState extends State<HomeTab> {
               // mapContoller.setMapStyle(themeforMap);
               googleMapCompleteContoller.complete(mapContoller);
               locateServicePosition();
+
+              setState(() {});
               // getCurrentLiveLocationOfUser();
             },
           ),
-          statusText != "Online"
-              ? Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: double.infinity,
-                  color: Colors.black87,
-                )
-              : Container(),
-          Positioned(
-            top: statusText != "Online"
-                ? MediaQuery.of(context).size.height * 0.05
-                : 20,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    if (isDriverActive != true) {
-                      serviceProviderOnline();
-                      updateDriversLocationAtRealTime();
+          // statusText != "Online"
+          //     ? Container(
+          //         height: MediaQuery.of(context).size.height,
+          //         width: double.infinity,
+          //         color: Colors.black87,
+          //       )
+          //     : Container(),
+          // Positioned(
+          //   top: statusText != "Online"
+          //       ? MediaQuery.of(context).size.height * 0.05
+          //       : 20,
+          //   left: 0,
+          //   right: 0,
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       ElevatedButton(
+          //         onPressed: () {
+          //           if (isDriverActive != true) {
+          //             serviceProviderOnline();
+          //             // updateDriversLocationAtRealTime();
 
-                      setState(() {
-                        statusText = "Online";
-                        isDriverActive = true;
-                      });
-                    } else {
-                      serviceProviderOffline();
-                      setState(() {
-                        statusText = "Offline";
-                        isDriverActive = false;
-                      });
-                      Fluttertoast.showToast(msg: "You're offline");
-                    }
-                  },
-                  //   Fluttertoast.showToast(
-                  //       msg: "Please select a vehicle from above");
-                  // }
-                  // setState(() {
-                  //   searchNearestOnlineDrivers(selectedVehicleType);
-                  //   saveSelection();
-                  // });
-                  style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      fixedSize: const Size(200, 40),
-                      backgroundColor: Colors.grey,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(26),
-                          side: const BorderSide(style: BorderStyle.solid))),
-                  child: Text(
-                    isDriverActive ? "Online" : "Now Offline",
-                    style: const TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Positioned(
-              top: 20,
-              left: 20,
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 5,
-                      spreadRadius: 0,
-                    ),
-                  ],
-                ),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Drawer()),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.menu,
-                    size: 30,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          //             setState(() {
+          //               statusText = "Online";
+          //               isDriverActive = true;
+          //             });
+          //           } else {
+          //             serviceProviderOffline();
+          //             setState(() {
+          //               statusText = "Offline";
+          //               isDriverActive = false;
+          //             });
+          //             Fluttertoast.showToast(msg: "You're offline");
+          //           }
+          //         },
+          //         //   Fluttertoast.showToast(
+          //         //       msg: "Please select a vehicle from above");
+          //         // }
+          //         // setState(() {
+          //         //   searchNearestOnlineDrivers(selectedVehicleType);
+          //         //   saveSelection();
+          //         // });
+          //         style: ElevatedButton.styleFrom(
+          //             elevation: 0,
+          //             fixedSize: const Size(200, 40),
+          //             backgroundColor: Colors.grey,
+          //             shape: RoundedRectangleBorder(
+          //                 borderRadius: BorderRadius.circular(26),
+          //                 side: const BorderSide(style: BorderStyle.solid))),
+          //         child: Text(
+          //           isDriverActive ? "Online" : "Now Offline",
+          //           style: const TextStyle(color: Colors.white, fontSize: 15),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );
@@ -389,19 +377,19 @@ class _HomeTabState extends State<HomeTab> {
     ref.onValue.listen((event) {});
   }
 
-  updateDriversLocationAtRealTime() {
-    streamSubscriptionPosition =
-        Geolocator.getPositionStream().listen((Position position) {
-      if (isDriverActive == true) {
-        Geofire.setLocation(currentUser!.uid, serviceCurrentPosition!.latitude,
-            serviceCurrentPosition!.longitude);
-      }
-      LatLng latLng = LatLng(
-          serviceCurrentPosition!.latitude, serviceCurrentPosition!.longitude);
+  // updateDriversLocationAtRealTime() {
+  //   streamSubscriptionPosition =
+  //       Geolocator.getPositionStream().listen((Position position) {
+  //     if (isDriverActive == true) {
+  //       Geofire.setLocation(currentUser!.uid, serviceCurrentPosition!.latitude,
+  //           serviceCurrentPosition!.longitude);
+  //     }
+  //     LatLng latLng = LatLng(
+  //         serviceCurrentPosition!.latitude, serviceCurrentPosition!.longitude);
 
-      controllerGoogleMap!.animateCamera(CameraUpdate.newLatLng(latLng));
-    });
-  }
+  //     controllerGoogleMap!.animateCamera(CameraUpdate.newLatLng(latLng));
+  //   });
+  // }
 
   serviceProviderOffline() {
     Geofire.removeLocation(currentUser!.uid);

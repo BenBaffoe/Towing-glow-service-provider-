@@ -49,7 +49,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 90, 228, 168),
+      backgroundColor: const Color.fromARGB(255, 0, 29, 110),
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
@@ -57,7 +57,7 @@ class _SignUpState extends State<SignUp> {
           iconSize: 30,
           color: Colors.white,
         ),
-        backgroundColor: const Color.fromARGB(255, 90, 228, 168),
+        backgroundColor: const Color.fromARGB(255, 0, 29, 110),
         title: const Text(
           "Towing Glow",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
@@ -67,7 +67,7 @@ class _SignUpState extends State<SignUp> {
       body: Column(children: [
         Container(
           decoration:
-              const BoxDecoration(color: Color.fromARGB(255, 90, 228, 168)),
+              const BoxDecoration(color: const Color.fromARGB(255, 0, 29, 110)),
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -90,7 +90,7 @@ class _SignUpState extends State<SignUp> {
         Expanded(
           child: Container(
             decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 240, 241, 235),
+                color: Color.fromARGB(255, 255, 255, 255),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
                 )),
@@ -120,7 +120,8 @@ class _SignUpState extends State<SignUp> {
                             decoration: const InputDecoration(
                               labelText: 'Name',
                               floatingLabelBehavior: FloatingLabelBehavior.auto,
-                              fillColor: Colors.white,
+                              fillColor:
+                                  const Color.fromARGB(255, 245, 245, 245),
                               filled: true,
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
@@ -150,7 +151,7 @@ class _SignUpState extends State<SignUp> {
                             decoration: const InputDecoration(
                               labelText: '  Phone',
                               floatingLabelBehavior: FloatingLabelBehavior.auto,
-                              fillColor: Colors.white,
+                              fillColor: Color.fromARGB(255, 245, 245, 245),
                               filled: true,
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
@@ -168,32 +169,35 @@ class _SignUpState extends State<SignUp> {
                             ),
                           ),
                         ),
-                        DropdownButtonFormField(
-                          decoration: InputDecoration(
-                            hintText: "Please select a serive",
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide: const BorderSide(
-                                  width: 0,
-                                  style: BorderStyle.none,
-                                )),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 8),
+                          child: DropdownButtonFormField(
+                            decoration: InputDecoration(
+                              hintText: "Please select a serive",
+                              filled: true,
+                              fillColor: Color.fromARGB(255, 245, 245, 245),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: const BorderSide(
+                                    width: 0,
+                                    style: BorderStyle.none,
+                                  )),
+                            ),
+                            items: services.map((e) {
+                              return DropdownMenuItem(
+                                value: e,
+                                child: Text(
+                                  e,
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                serviceType = newValue as String;
+                              });
+                            },
                           ),
-                          items: services.map((e) {
-                            return DropdownMenuItem(
-                              value: e,
-                              child: Text(
-                                e,
-                                style: const TextStyle(color: Colors.grey),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (newValue) {
-                            setState(() {
-                              serviceType = newValue as String;
-                            });
-                          },
                         ),
                         const SizedBox(
                           height: 20,
@@ -213,7 +217,7 @@ class _SignUpState extends State<SignUp> {
                             decoration: const InputDecoration(
                               labelText: 'Email',
                               floatingLabelBehavior: FloatingLabelBehavior.auto,
-                              fillColor: Colors.white,
+                              fillColor: Color.fromARGB(255, 245, 245, 245),
                               filled: true,
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
@@ -249,7 +253,7 @@ class _SignUpState extends State<SignUp> {
                             decoration: const InputDecoration(
                               labelText: 'Password',
                               floatingLabelBehavior: FloatingLabelBehavior.auto,
-                              fillColor: Colors.white,
+                              fillColor: Color.fromARGB(255, 245, 245, 245),
                               filled: true,
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
@@ -278,7 +282,7 @@ class _SignUpState extends State<SignUp> {
                             decoration: const InputDecoration(
                               labelText: 'Confirm Password',
                               floatingLabelBehavior: FloatingLabelBehavior.auto,
-                              fillColor: Colors.white,
+                              fillColor: Color.fromARGB(255, 245, 245, 245),
                               filled: true,
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
@@ -308,7 +312,7 @@ class _SignUpState extends State<SignUp> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  const Color.fromARGB(255, 90, 228, 168),
+                                  const Color.fromARGB(255, 0, 29, 110),
                               fixedSize: const Size(30, 60),
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
@@ -362,7 +366,7 @@ class _SignUpState extends State<SignUp> {
                               child: const Text(
                                 'Click here to sign in',
                                 style: TextStyle(
-                                    color: Color.fromARGB(255, 90, 228, 168),
+                                    color: Color.fromARGB(255, 0, 156, 222),
                                     fontSize: 14,
                                     fontWeight: FontWeight.w800),
                               ),

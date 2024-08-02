@@ -6,6 +6,7 @@ class UserServiceRequestInfo {
   String service;
   String userName;
   String userPhone;
+  var serviceProviderLocation;
 
   UserServiceRequestInfo(
     this.service, {
@@ -13,5 +14,6 @@ class UserServiceRequestInfo {
     required this.userName,
     required this.userPhone,
     required this.originAddress,
+    required this.serviceProviderLocation,
   });
 }

@@ -4,6 +4,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/Account.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/editprofile.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/history.dart';
+import 'package:service_providers_glow/global/global.dart';
 import 'package:service_providers_glow/tapPages/home_tab.dart';
 
 class Home extends StatefulWidget {
@@ -52,7 +56,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       // Call showModalBottomSheet when the widget is built
     });
 
-    tabController = TabController(length: 4, vsync: this);
+    tabController = TabController(length: 2, vsync: this);
   }
 
   getCurrentLiveLocationOfUser() async {
@@ -78,8 +82,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       body: TabBarView(
         physics: const NeverScrollableScrollPhysics(),
         controller: tabController,
-        children: const [
+        children: [
           HomeTab(),
+          DrawerScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -90,10 +95,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.star),
-            label: "Ratings",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
             label: "Account",
           ),
         ],

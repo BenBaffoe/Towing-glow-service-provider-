@@ -63,6 +63,8 @@ dependencies:
   flutter_local_notifications: ^17.2.1+1
   flutter_timezone: ^2.0.1
   rxdart: ^0.27.7
+  webview_flutter: ^4.8.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
