@@ -27,15 +27,15 @@ class _EditProfileState extends State<EditProfile> {
   final avatarRef = FirebaseStorage.instance.ref();
   ImagePicker _imageA = ImagePicker();
 
-  Future<void> getProfile() async {
-    File? _profileImage;
-    XFile? file = await _imageA.pickImage(
-      source: ImageSource.gallery,
-    );
+  String? profilePhoto;
 
-    if (file != null) {
-      _profileImage = File(file.path);
-    }
+  Future<void> getPhoto() async {
+    profilePhoto = await FirebaseStorage.instance
+        .ref()
+        .child('profile/avatar.png')
+        .getDownloadURL();
+
+    setState(() {});
   }
 
   DatabaseReference userRef = FirebaseDatabase.instance.ref().child("userInfo");
@@ -233,12 +233,12 @@ class _EditProfileState extends State<EditProfile> {
         children: [
           Stack(
             children: [
-              _image != null
+              profilePhoto != null
                   ? Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: CircleAvatar(
                         radius: 65,
-                        backgroundImage: MemoryImage(_image!),
+                        backgroundImage: NetworkImage(profilePhoto!),
                       ),
                     )
                   : const Padding(
@@ -261,7 +261,7 @@ class _EditProfileState extends State<EditProfile> {
                     height: 50,
                     width: 50,
                     child: IconButton(
-                      onPressed: getProfile,
+                      onPressed: getPhoto,
                       icon: const Icon(
                         Icons.camera_alt,
                         size: 35,

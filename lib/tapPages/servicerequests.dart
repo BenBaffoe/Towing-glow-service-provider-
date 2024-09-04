@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/checkservice.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/userLocation.dart';
 import 'package:service_providers_glow/global/global.dart';
+import 'package:service_providers_glow/local_notifications.dart';
 import 'package:service_providers_glow/models/serviceproviderdata.dart';
 import 'package:service_providers_glow/models/user_service_request.dart';
 
@@ -24,6 +26,8 @@ class ServiceRequests extends StatefulWidget {
 
 class _ServiceRequestsState extends State<ServiceRequests> {
   DatabaseReference? referenceRequest;
+  Checkservice? checkservice;
+
   // ServiceData? serviceData;
 
   Future<void> serviceProviderInfo() async {
@@ -146,6 +150,10 @@ class _ServiceRequestsState extends State<ServiceRequests> {
                     const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
+                        // setState(() {
+                        //   checkservice = "Received" as Checkservice?;
+                        // });
+                        LocalNotifications.cancel(4);
                         serviceProviderInfo();
                         Navigator.pushReplacement(
                           context,
@@ -171,6 +179,7 @@ class _ServiceRequestsState extends State<ServiceRequests> {
                     const SizedBox(width: 80),
                     ElevatedButton(
                       onPressed: () {
+                        LocalNotifications.cancel(4);
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(

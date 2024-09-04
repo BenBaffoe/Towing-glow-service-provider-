@@ -8,6 +8,7 @@ import 'package:service_providers_glow/Common/toast.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/editprofile.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/history.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/historyinformation.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/payment_screen.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/userlogin.dart';
 
 class DrawerScreen extends StatefulWidget {
@@ -261,8 +262,51 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                   ),
                                 ],
                               ),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 26, 0, 20),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.attach_money_outlined,
+                                          size: 30,
+                                          color: Colors.blue,
+                                          textDirection: TextDirection.ltr,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                Payment_Screen(),
+                                          ),
+                                        );
+                                      },
+                                      child: const Text(
+                                        "Payments",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                                 child: Row(
                                   children: [
                                     Padding(

@@ -49,11 +49,15 @@ class LocalNotifications {
     const NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
     await _flutterLocalNotificationsPlugin.show(
-      0,
+      4,
       title,
       body,
       notificationDetails,
       payload: payload,
     );
+  }
+
+  static Future cancel(int id) async {
+    await _flutterLocalNotificationsPlugin.cancel(id);
   }
 }

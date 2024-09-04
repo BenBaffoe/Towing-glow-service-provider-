@@ -21,10 +21,10 @@ class _SplashScreenState extends State<SplashScreen> {
         firebaseAuth.currentUser != null
             ? AssistantMethods.readCurrentOnlineUserInfo()
             : null;
-        Navigator.push(
+        Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (c) => const SignUp()));
       } else {
-        Navigator.push(
+        Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (c) => const SignUp()));
       }
     });
@@ -53,7 +53,8 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             CircleAvatar(
               radius: 60,
-              backgroundImage: AssetImage("assets/logo.jfif"),
+              backgroundImage:
+                  AssetImage("assets/gears-cogs-settings_24908-80902.avif"),
             ),
             SizedBox(
               height: 20,

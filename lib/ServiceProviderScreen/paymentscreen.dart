@@ -25,7 +25,7 @@ class _PaymentscreenState extends State<Paymentscreen> {
 
   Future<PaystackAuthResponse> createTransaction(
       Transaction transaction) async {
-    const String url = 'https://api.payment.co/transaction/intialize';
+    const String url = 'https://api.paystack.co/transaction/intialize';
     final data = transaction.toJson();
 
     try {
@@ -46,7 +46,7 @@ class _PaymentscreenState extends State<Paymentscreen> {
     }
   }
 
-  Future<String> initializeTransaction() async {
+  Future<String?> initializeTransaction() async {
     try {
       final price = double.parse(amount);
       final transaction = Transaction(
@@ -54,12 +54,14 @@ class _PaymentscreenState extends State<Paymentscreen> {
         reference: reference,
         currency: 'GHS',
         email: email,
+        channels: ['card', 'mobile_money'],
       );
       final authResponse = await createTransaction(transaction);
+      print('Authorization URL: ${authResponse.authorization_url}');
       return authResponse.authorization_url;
     } catch (e) {
-      print('Error creating transaction : $e');
-      return e.toString();
+      print('Error creating transaction: $e');
+      return null;
     }
   }
 

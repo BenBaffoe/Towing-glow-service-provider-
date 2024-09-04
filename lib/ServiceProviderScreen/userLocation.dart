@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
@@ -6,9 +8,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:service_providers_glow/Assistants/assitant_method.dart';
 // import 'package:service_providers_glow/Assistants/assistant_methods.dart';
 import 'package:service_providers_glow/global/global.dart';
+import 'package:service_providers_glow/local_notifications.dart';
 import 'package:service_providers_glow/models/directions_details_info.dart';
 // import 'package:service_providers_glow/global/mapKey.dart';
 import 'package:service_providers_glow/models/user_service_request.dart';
+import 'package:service_providers_glow/paystack/paymnetstats.dart';
 
 class UserLocation extends StatefulWidget {
   final UserServiceRequestInfo? userCurrentLocation;
@@ -23,11 +27,79 @@ class _UserLocationState extends State<UserLocation> {
   final Completer<GoogleMapController> googleMapCompleteController =
       Completer<GoogleMapController>();
 
+  Paymentstats? payService;
+
+  String amount = "50";
+
+  Future<void> PaymentstatsSent() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        print('No user is logged in.');
+        return;
+      }
+
+      String uid = user.uid;
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.ref().child('userInfo').child(uid);
+
+      // Fetching user data
+      DataSnapshot snapshot = await userRef.get();
+      DatabaseReference referenceRequest =
+          FirebaseDatabase.instance.ref().child("paymentStatus").push();
+
+      if (snapshot.exists) {
+        Map<dynamic, dynamic> serviceProviderInfoMap =
+            snapshot.value as Map<dynamic, dynamic>;
+
+        String service = serviceProviderInfoMap['service'];
+        String name = serviceProviderInfoMap['name'];
+        String phone = serviceProviderInfoMap['phone'];
+        String email = serviceProviderInfoMap['email'];
+        String time = serviceProviderInfoMap['time'];
+
+        Map<String, dynamic> serviceInfo = {
+          "email": email,
+          "name": name,
+          "phone": phone,
+          "service": service,
+          "JobStatus": jobState,
+          "time": time,
+          "amount": amount,
+        };
+
+        // Creating Paymentstats object
+        payService = Paymentstats(
+          name: name,
+          phone: phone,
+          service: service,
+          jobState: jobState,
+          time: time,
+          amount: amount,
+        );
+
+        // Pushing data to Firebase
+        await referenceRequest.set(serviceInfo);
+
+        print("Data pushed to paymentStatus node successfully:");
+        print("Reference: $referenceRequest");
+        print("Service Info: $serviceInfo");
+      } else {
+        print('No data found for this user.');
+      }
+    } catch (e) {
+      print('Error retrieving user data: $e');
+    }
+  }
+
   GoogleMapController? controllerGoogleMap;
   LatLng? userLocation;
   Map<PolylineId, Polyline> polylines = {};
 
   Timer? _timer;
+
+  String jobState = '';
 
   String distance = " ";
   String duration = " ";
@@ -40,24 +112,41 @@ class _UserLocationState extends State<UserLocation> {
         .animateCamera(CameraUpdate.newCameraPosition(newCameraPosition));
   }
 
-  Future<void> locateServicePosition() async {
-    Position currentPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    serviceCurrentPosition = currentPosition;
+  locateServicePosition() async {
+    try {
+      // Check if we have location permission
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        print("Location permission denied");
+        return;
+      }
 
-    LatLng latLngPosition = LatLng(
-        serviceCurrentPosition!.latitude, serviceCurrentPosition!.longitude);
-    CameraPosition cameraPosition =
-        CameraPosition(target: latLngPosition, zoom: 15);
+      // Attempt to get the current position
+      Position currentPosition = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      LatLng latLngPosition =
+          LatLng(currentPosition.latitude, currentPosition.longitude);
 
-    controllerGoogleMap!
-        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+      serviceProviderLocation = latLngPosition;
 
-    String humanReadableAddress =
-        await AssistantMethods.searchAddressForGeographicCoOrdinates(
-            serviceCurrentPosition!, context);
+      if (controllerGoogleMap != null) {
+        CameraPosition cameraPosition =
+            CameraPosition(target: latLngPosition, zoom: 15);
+        controllerGoogleMap!
+            .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    _updateDriverPosition(latLngPosition);
+        String humanReadableAddress =
+            await AssistantMethods.searchAddressForGeographicCoOrdinates(
+                currentPosition, context);
+
+        _updateDriverPosition(latLngPosition);
+      } else {
+        print("Google Map Controller is null when trying to animate camera.");
+      }
+    } catch (e) {
+      print("Error while retrieving the service provider's location: $e");
+    }
   }
 
   Future<List<LatLng>> getPolylinePoints() async {
@@ -166,23 +255,59 @@ class _UserLocationState extends State<UserLocation> {
         ),
       ),
       builder: (context) => Container(
+        width: double.infinity,
+        height: 250,
         padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'You Have Arrived!',
+            const Padding(
+              padding: EdgeInsets.all(2.0),
+              child: Text(
+                'Job Done ?',
+                style: TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              ),
             ),
-            const SizedBox(height: 20),
-            Text(
-              'You are now at your destination.',
+            const Padding(
+              padding: EdgeInsets.all(3.0),
+              child: Text(
+                'User can make payment through the app!',
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
             ),
-            const SizedBox(height: 20),
+            const Padding(
+              padding: EdgeInsets.all(2.0),
+              child: Text(
+                "Note Payment records are recorded in the payment section.",
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'User is to pay: GHS 50',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
+                PaymentstatsSent();
+                setState(() {
+                  jobState = "Done";
+                });
+                setState(() {});
                 Navigator.of(context).pop();
               },
-              child: const Text('OK'),
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+              ),
+              child: const Text(
+                'Click here to enable user to make payment',
+                style: TextStyle(color: Colors.blue),
+              ),
             ),
           ],
         ),
@@ -233,15 +358,16 @@ class _UserLocationState extends State<UserLocation> {
               if (driverPosition != null)
                 Marker(
                   markerId: const MarkerId("currentLocation"),
-                  position: driverPosition!,
-                  icon: BitmapDescriptor.defaultMarker,
+                  position: googlePlexInitialPosition,
+                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                      BitmapDescriptor.hueGreen),
                 ),
               if (widget.userCurrentLocation != null)
                 Marker(
                   markerId: MarkerId(widget.userCurrentLocation!.userName),
                   position: widget.userCurrentLocation!.originLatLng,
                   icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueGreen),
+                      BitmapDescriptor.hueRed),
                 ),
             },
             polylines: Set<Polyline>.of(polylines.values),
@@ -255,17 +381,32 @@ class _UserLocationState extends State<UserLocation> {
               locateServicePosition();
             },
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: ElevatedButton(
-              onPressed: () {
-                _showDestinationReachedModal();
-              },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 90, 228, 168)),
-              child: Text(
-                "Show Service Provider Info ",
-                style: TextStyle(color: Colors.white),
+          Positioned(
+            bottom: 40,
+            left: 20,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(45),
+                child: Container(
+                  height: 90,
+                  width: 90,
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      _showDestinationReachedModal();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Icon(
+                        Icons.monetization_on,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                    ),
+                    elevation: 2,
+                    backgroundColor: const Color.fromARGB(255, 0, 156, 222),
+                  ),
+                ),
               ),
             ),
           ),
@@ -274,9 +415,9 @@ class _UserLocationState extends State<UserLocation> {
     );
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel(); // Cancel the timer when the widget is disposed
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _timer?.cancel(); // Cancel the timer when the widget is disposed
+  //   super.dispose();
+  // }
 }

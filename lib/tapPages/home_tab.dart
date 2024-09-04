@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:service_providers_glow/Assistants/assitant_method.dart';
 import 'package:service_providers_glow/Info/app_info.dart';
 import 'package:service_providers_glow/ServiceProviderScreen/Account.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/checkservice.dart';
 
 import 'package:service_providers_glow/global/global.dart';
 import 'package:service_providers_glow/local_notifications.dart';
@@ -49,6 +50,8 @@ class _HomeTabState extends State<HomeTab> {
 
   Map getdata = {};
 
+  Checkservice? checkservice;
+
   GoogleMapController? controllerGoogleMap;
 
   UserServiceRequestInfo? userServiceRequestInfo;
@@ -79,7 +82,6 @@ class _HomeTabState extends State<HomeTab> {
   Future<void> retrieveServiceRequest(String serviceType) async {
     DatabaseReference userRef =
         FirebaseDatabase.instance.ref().child("Service Requests");
-
     userRef.onValue.listen((event) {
       // Check if there's data
       if (event.snapshot.exists) {
@@ -108,13 +110,14 @@ class _HomeTabState extends State<HomeTab> {
             String originAddress =
                 serviceRequestInfo['originAddress'] ?? 'Unknown';
             String userPhone = serviceRequestInfo['userPhone'] ?? 'Unknown';
+            String serviceId = serviceRequestInfo['serviceId'] ?? 'Unknown';
 
             var originLocation =
                 Provider.of<AppInfo>(context, listen: false).userPickUpLocation;
 
             Map originLocations = {
-              "latitude": originLocation!.loactionLatitude,
-              "longitude": originLocation.loactionLongitude,
+              "latitude": originLocation?.loactionLatitude,
+              "longitude": originLocation?.loactionLongitude,
             };
 
             // Map _userInfo = {
@@ -206,7 +209,8 @@ class _HomeTabState extends State<HomeTab> {
         Marker(
           markerId: const MarkerId("currentLocation"),
           position: driverPosition!,
-          icon: BitmapDescriptor.defaultMarker,
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
         ),
       );
     });

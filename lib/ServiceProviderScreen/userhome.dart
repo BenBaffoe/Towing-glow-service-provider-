@@ -94,13 +94,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.star),
+            icon: Icon(Icons.person_pin),
             label: "Account",
           ),
         ],
-        unselectedItemColor: darkTheme ? Colors.black : Colors.white,
-        selectedItemColor: darkTheme ? Colors.black : Colors.blue,
-        backgroundColor: darkTheme ? Colors.black : Colors.black,
+        unselectedItemColor: darkTheme ? Colors.grey : Colors.grey,
+        selectedItemColor: darkTheme ? Colors.white : Colors.white,
+        backgroundColor: darkTheme
+            ? Color.fromARGB(255, 0, 29, 110)
+            : Color.fromARGB(255, 0, 29, 110),
         type: BottomNavigationBarType.fixed,
         selectedLabelStyle: const TextStyle(fontSize: 14),
         showSelectedLabels: true,

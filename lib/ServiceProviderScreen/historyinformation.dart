@@ -1,9 +1,13 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:service_providers_glow/ServiceProviderScreen/history.dart';
+import 'package:service_providers_glow/ServiceProviderScreen/serviceInfo.dart';
 import 'package:service_providers_glow/global/global.dart';
+// import 'package:onroadvehiclebreakdowwn/Assistants/serviceinfo.dart';
+// import 'package:onroadvehiclebreakdowwn/Assistants/serviceproviderinfo.dart';
+// import 'package:onroadvehiclebreakdowwn/global/global.dart';
+// import 'package:onroadvehiclebreakdowwn/models/historyinfo.dart';
 
 class HistoryInformation extends StatefulWidget {
   final Historyinfo? userHistory;
@@ -14,12 +18,12 @@ class HistoryInformation extends StatefulWidget {
   });
 
   @override
-  State<HistoryInformation> createState() => _HistoryInformationState();
+  State<HistoryInformation> createState() => _HistoryState();
 }
 
-class _HistoryInformationState extends State<HistoryInformation> {
+class _HistoryState extends State<HistoryInformation> {
   DatabaseReference userRef = FirebaseDatabase.instance.ref().child("userInfo");
-  List<Historyinfo> serviceInfoList = [];
+  List<ServiceInfo> serviceInfoList = [];
   String? userName;
   String? userEmail;
   String? userPhone;
@@ -68,10 +72,12 @@ class _HistoryInformationState extends State<HistoryInformation> {
               LatLng originLatLng = LatLng(originLatitude, originLongitude);
 
               setState(() {
-                serviceInfoList.add(Historyinfo(
+                serviceInfoList.add(ServiceInfo(
+                  serivceProviderLocationAddress: originAddress,
+                  serivceProviderName: name,
+                  serivceProviderPhone: phone,
                   service: service,
-                  userName: name,
-                  userPhone: phone,
+                  time: time,
                 ));
               });
             }
@@ -99,11 +105,62 @@ class _HistoryInformationState extends State<HistoryInformation> {
     });
   }
 
+  void _deleteServiceInfo(int index) {
+    setState(() {
+      serviceInfoList.removeAt(index);
+    });
+  }
+
+  void _deleteAllServiceInfo() {
+    setState(() {
+      serviceInfoList.clear();
+    });
+  }
+
+  void _showDeleteDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Service'),
+          content: Text('Are you sure you want to delete this service?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _deleteServiceInfo(index);
+                Navigator.of(context).pop();
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('History'),
+        centerTitle: true,
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back_ios)),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: _deleteAllServiceInfo,
+          ),
+        ],
       ),
       body: serviceInfoList.isEmpty
           ? const Center(child: Text("Nothing To See Here"))
@@ -111,38 +168,41 @@ class _HistoryInformationState extends State<HistoryInformation> {
               itemCount: serviceInfoList.length,
               itemBuilder: (context, index) {
                 final serviceInfo = serviceInfoList[index];
-                return Card(
-                  elevation: 4.0,
-                  margin: const EdgeInsets.all(8.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.userHistory?.userName ?? 'Unknown User',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                return GestureDetector(
+                  onTap: () => _showDeleteDialog(index),
+                  child: Card(
+                    elevation: 4.0,
+                    margin: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.userHistory?.userName ?? 'Unknown User',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Service Request: ${serviceInfo.service ?? 'N/A'}",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black45,
+                          SizedBox(height: 10),
+                          Text(
+                            "Service Request: ${serviceInfo.service ?? 'N/A'}",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black45,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Service Provider: ${serviceInfo.userName ?? 'Unknown'}",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black45,
+                          SizedBox(height: 10),
+                          Text(
+                            "Service Provider: ${serviceInfo.serivceProviderName ?? 'Unknown'}",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black45,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );

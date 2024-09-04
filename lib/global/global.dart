@@ -74,7 +74,7 @@ Future<void> getData(String _nameController, String _emailController,
 String humanReadableAddress = '';
 
 String username = "";
-String googlesMapKey = "AIzaSyBqtAzED0r5rQvQjsncU10np2bIAUsg6ZY";
+String googlesMapKey = "AIzaSyB4-gptc_ZTAuw3ermXoDTBgCh_57bp57w";
 const CameraPosition googlePlexIntitialPosition = CameraPosition(
     bearing: 244.64,
     target: LatLng(6.6833, -1.6163),
